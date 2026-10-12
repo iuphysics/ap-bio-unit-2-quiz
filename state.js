@@ -1,0 +1,7 @@
+export const freshState=()=>({version:1,records:{},drafts:{},round:null});
+export function shuffled(ids,random=Math.random){const out=[...ids];for(let i=out.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[out[i],out[j]]=[out[j],out[i]];}return out;}
+export function pool(questions,state,mode,includeRecovered=false){return questions.filter(q=> mode==='mcq'?q.type==='mcq':mode==='frq'?q.type==='frq':includeRecovered?state.records[q.id]?.everWrong:state.records[q.id]?.needsPractice).map(q=>q.id);}
+export function startRound(state,ids,mode,shuffle=false){state.round={mode,order:shuffle?shuffled(ids):[...ids],index:0,answers:{},revealed:{},shuffle,finished:false};return state;}
+export function grade(state,id,answer,correct){const round=state.round;if(Object.hasOwn(round.answers,id))return false;round.answers[id]={answer,correct};const prior=state.records[id]||{attempts:0,correctAttempts:0,everWrong:false};state.records[id]={...prior,attempts:prior.attempts+1,correctAttempts:prior.correctAttempts+(correct?1:0),everWrong:prior.everWrong||!correct,needsPractice:!correct,latestCorrect:correct,latestAnswer:answer};return true;}
+export function stats(state,ids){const r=ids.map(id=>state.records[id]).filter(Boolean);return {attempted:r.length,correct:r.filter(x=>x.latestCorrect).length,missed:r.filter(x=>x.needsPractice).length,attempts:r.reduce((n,x)=>n+x.attempts,0)};}
+export function loadState(storage,key){try{const s=JSON.parse(storage.getItem(key));if(s?.version!==1||!s.records||!s.drafts)return freshState();return s;}catch{return freshState();}}
