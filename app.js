@@ -2,8 +2,10 @@ import {freshState,pool,startRound,grade,stats,loadState} from './state.js';
 const KEY='cell-study-unit-2-v1';
 const $=s=>document.querySelector(s);
 const escape=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let state=loadState(localStorage,KEY),questions=[],byId={},inspecting=null;
-function save(){try{localStorage.setItem(KEY,JSON.stringify(state));$('#save-state').textContent='Saved on this device';}catch{$('#save-state').textContent='Storage unavailable · keep this tab open';}}
+let storage;
+try { storage=window.localStorage; } catch { storage={getItem:()=>null,setItem:()=>{throw new Error('Storage unavailable');}}; }
+let state=loadState(storage,KEY),questions=[],byId={},inspecting=null;
+function save(){try{storage.setItem(KEY,JSON.stringify(state));$('#save-state').textContent='Saved on this device';}catch{$('#save-state').textContent='Storage unavailable · keep this tab open';}}
 function ids(mode=state.round.mode){return pool(questions,state,mode,$('#include-recovered').checked);}
 function begin(mode,shuffle=false){startRound(state,ids(mode),mode,shuffle);inspecting=null;save();render();}
 function picture(im,label){return `<a class="image-link" href="${im.src}" target="_blank" rel="noopener" title="Open full-size image"><img class="source-image" src="${im.src}" width="${im.width}" height="${im.height}" alt="${escape(label)} — original PDF page ${im.page}. Open for full size." loading="lazy"></a>`;}
