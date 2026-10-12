@@ -98,6 +98,8 @@ for idx,m in enumerate(marks):
  assert q['images'],qid
  if qid<=183:assert q['correct'] in q['choices'],(qid,q['correct'],q['choices'])
  records.append(q)
+from choice_regions import add_choice_regions
+add_choice_regions(pdf, records)
 (ROOT/'questions.json').write_text(json.dumps(records,ensure_ascii=False,indent=2))
 print('Extracted',len(records),'questions;',sum(q.get('explanationSource')=='PDF scoring guide' for q in records),'source explanations')
 print('Missing study explanations:',[q['id'] for q in records if q['type']=='mcq' and not q['explanation']])

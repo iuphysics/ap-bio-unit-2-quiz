@@ -29,3 +29,15 @@ test('bad stored data recovers gracefully',()=>{assert.deepEqual(loadState({getI
 test('shared setups are available when related questions are shuffled individually',()=>{
  for(const id of [2,3,4,5,6,7,8,16,17,18,19,20,40,41,42,57,58,59,93,94,95,101,102,103,186,187,188,190,191,192,199,200,201,211,212,214,215,216,220,221,226,227,228,240,241,251,252])assert.ok(questions[id-1].contextImages.length,`context ${id}`);
 });
+test('clickable choice regions preserve every source pixel in order',()=>{
+ for(const q of questions.filter(q=>q.type==='mcq')){
+  assert.deepEqual([...new Set(q.regions.filter(r=>r.choice).map(r=>r.choice))],q.choices);
+  for(const [index,image] of q.images.entries()){
+   let cursor=0;
+   for(const region of q.regions.filter(r=>r.image===index)){assert.equal(region.top,cursor,`Q${q.id} gap or overlap`);assert.ok(region.height>0);cursor+=region.height;}
+   assert.equal(cursor,image.height,`Q${q.id} cropped content`);
+  }
+ }
+ assert.equal(questions[45].regions.filter(r=>r.choice==='A').length,1,'Q46 directions are not duplicate buttons');
+ assert.ok(questions[34].images.length>1,'multi-page diagram fixture');
+});

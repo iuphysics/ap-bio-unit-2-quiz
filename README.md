@@ -16,7 +16,7 @@ Open **http://localhost:4173**. Any static web host can also serve `index.html`,
 
 ## Practice
 
-- **Multiple choice:** click A–E to see the correct answer and reasoning. The first selection counts for that round. Clicking other choices lets you review explanations without changing the recorded attempt.
+- **Multiple choice:** click the original answer text or diagram itself to see the correct answer and reasoning. The first selection counts for that round. Clicking other choices lets you review explanations without changing the recorded attempt.
 - **Missed questions:** practice only items whose latest attempt was incorrect. Getting one right removes it from the *next* missed-question round. The current queue stays stable so navigation never skips an item. Enable “Include previously missed” to revisit recovered questions too.
 - **Shuffle:** starts a fresh shuffled round of the active set without deleting your scores or drafts. Each question appears once per round. The original choice order stays unchanged to preserve figure labels and the exact source.
 - **Free response:** type your answer, select **Get answer**, and compare it with the original scoring rubric. Mark it correct or needing practice yourself; FRQs are not automatically graded. For graph/drawing prompts, sketch on paper and describe your reasoning in the editor.
