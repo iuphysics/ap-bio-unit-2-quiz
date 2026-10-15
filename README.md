@@ -12,7 +12,29 @@ cd ap-bio-unit-2-quiz
 npm start
 ```
 
-Open **http://localhost:4173**. Any static web host can also serve `index.html`, `app.js`, `state.js`, `style.css`, `questions.json`, and `assets/` from the same directory. Opening the HTML directly with `file://` will not work because the question bank is loaded with `fetch`.
+Open **http://localhost:4173**. A static HTTPS host can serve the repository root, including the service worker, manifest, `vendor/`, `icons/`, and `assets/`. Opening the HTML directly with `file://` will not work because the question bank is loaded with `fetch`.
+
+## Use without Wi-Fi
+
+1. Open https://iuphysics.github.io/ap-bio-unit-2-quiz/ while online.
+2. Select **Download for offline use** and keep the page open until it says **Ready offline**. The download is about 40 MB and includes every question, diagram, explanation, and FRQ rubric.
+3. Reopen the same link in the same browser without a connection. You can optionally add the site to your home screen or install it using your browser's app menu.
+
+Offline quizzes support answer selection, shuffle, missed-question practice, FRQ comparison, and saved progress. Interrupted downloads can resume. The status checks that every required file is cached; a partially downloaded set is never labeled ready. Use **Check offline files** to verify the saved set.
+
+Downloads and scores belong to this browser/device. Clearing site data removes them, and browsers can evict offline files when storage is scarce. Private browsing may not retain them. If files are removed, reconnect and download again. Installation alone does not download the question bank; wait for **Ready offline**.
+
+### Offline validation
+
+With a local server running on port 4174 and Playwright available:
+
+```sh
+QUIZ_URL=http://localhost:4174 node tests/offline-browser.mjs
+```
+
+This test disables the browser connection, verifies interruption/retry and the complete cache, closes and reopens the page offline, answers questions, shuffles, opens a previously unvisited FRQ and its rubric, checks saved drafts, and repairs an intentionally missing cached image.
+
+When changing application files or questions in a future release, bump `VERSION` in `sw.js` and update the matching cache name in the offline test. The new service worker installs a complete application shell before activating; the user then downloads that release's question assets. Offline clients keep their existing release until they reconnect.
 
 ## Practice
 
@@ -56,6 +78,6 @@ The script expects this specific source document. Added explanations are maintai
 
 ## Design and content
 
-The app uses a restrained green study interface with DaisyUI as its component baseline and local responsive styles. The optional DaisyUI stylesheet is loaded from its CDN; the application logic and question assets are local.
+The app uses a restrained green study interface with DaisyUI as its component baseline and local responsive styles. DaisyUI is vendored locally with its MIT license so the interface has no network dependency.
 
 The supplied assessment content and marks retain their original ownership. This private study repository does not claim ownership of the assessment material or affiliation with College Board.
